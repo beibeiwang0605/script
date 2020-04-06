@@ -12,6 +12,7 @@ from test_selenium.test_hogwarts import TestHogwarts
 
 
 class TestBrowser(TestHogwarts):
+    """多浏览器选择"""
     def setup_method(self,method):
         browser = os.getenv("browser", "").lower()
         if browser == "PhantomJS":
