@@ -14,7 +14,7 @@ class TestSearch:
         assert self.main.goto_search_page().search("alibaba").get_price("baba") > 100
 
     @pytest.mark.parametrize("key,stock_type,price",[
-        ("alibaba","BABA",200),
+        ("alibaba","BABA",100),
         ("JD","JD",20)
     ])
     def test_search_data(self, key, stock_type, price):

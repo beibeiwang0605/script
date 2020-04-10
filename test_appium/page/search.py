@@ -4,17 +4,16 @@
 from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.webdriver import WebDriver
 
+from test_appium.page.base_page import BasePage
 
-class Search:
-    _driver: WebDriver
 
-    # 把app里的driver传递过来这里使用
-    def __init__(self, driver):
-        self._driver = driver
-
+class Search(BasePage):
+    # 经常使用的控件或者定位可以放到这里维护
+    #todo:多平台、多版本、多个可能定位符
+    _name_locator = (MobileBy.ID, "name")
     def search(self, key: str):
-        self._driver.find_element(MobileBy.ID, "search_input_text").send_keys(key)
-        self._driver.find_element(MobileBy.ID, "name").click()
+        self.find_element(MobileBy.ID, "search_input_text").send_keys(key)
+        self.find_element(self._name_locator).click()
         return self   # 支持链式调用
         # todo
 
