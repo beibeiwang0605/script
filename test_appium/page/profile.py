@@ -14,4 +14,5 @@ class Profile(BasePage):
         self.find_element(By.ID, 'button_next').click()
         msg = self.find_element(By.ID, 'md_content').text
         self.find_element(By.ID, 'md_buttonDefaultPositive').click()
+        #self.find_element(By.XPATH, "//*[@class='android.widget.Toast']").text
         return msg
