@@ -22,7 +22,7 @@ class GroupChat(WeWork):
             params={"access_token": self.get_token(self.secret)},
             json=data)
         # json格式化打印
-        print(json.dumps(r.json(), indent=3))
+        self.format(r)
         return r.json()
 
     def get(self,_chat_id):
@@ -31,5 +31,5 @@ class GroupChat(WeWork):
             detail_url,
             params={"access_token": self.get_token(self.secret)},
             json={"chat_id": _chat_id})
-        print(json.dumps(r.json(), indent=3))
+        self.format(r)
         return r.json()

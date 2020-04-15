@@ -26,7 +26,6 @@ class TestWeWork:
     def test_groupchat_get(self):
         """获取客户群列表"""
         r = self.groupchat.list()
-
         assert r['errcode']==0
 
     def test_group_get_status(self):
