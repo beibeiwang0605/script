@@ -1,0 +1,21 @@
+
+
+testcase:
+  name: xxx
+  description: dd
+  steps:
+    - method: get
+      params: {a:1,b:ccc}
+    - eq: [error,1]
+
+
+
+RF:（不会编程的QA）
+获取信息 1 2
+验证信息 3 4
+拿过去一个月的数据回放
+
+BBD
+given xxx
+when xxx
+自然语言写case是最差的
