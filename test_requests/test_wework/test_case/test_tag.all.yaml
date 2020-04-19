@@ -1,0 +1,30 @@
+data:
+  "test_delete": ["demo1","demo2","demo3","demo4","中文测试","中文"," ","*","✌",""]
+#todo:完成对步骤的解析
+steps:
+  "test_delete":
+    - {method: tag.get}
+    - {path: '$..tag[?(@.name==${name})]', extract: before}
+   # - {method: delete,condition: xx}
+   # - {method: tag.get}
+   # - {extract: path1, name: size_before}
+    - {method: tag.add, name: '${name}'}
+    - {method: get}
+    - {path: '$..tag[?(@.name==${name})]', extract: after}
+  #  - {extract: path1, name: size_after}
+    - {assertion: [1, eq, 2]}
+    - {assertion: "len([1,2])>len([1])"
+
+
+"test_delete2":
+  - method: get
+    url: xxx
+    query: {a: 1}
+  - {extract: '$..tag[?(@.name=="{name}")]', name: xxs}
+  - {method: delete,condition: xx}
+  - {method: get}
+  - {extract: path1, name: size_before}
+  - {method: add}
+  - {method: get}
+  - {extract: path1, name: size_after}
+  - {assertion: size_after==size_before}

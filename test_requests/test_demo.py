@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 # Time ： 2020/4/12 17:08
 # Auth ： beibei
+import json
 from pprint import pprint
 
 import requests
+from jsonpath import jsonpath
 from requests import Session, Response
+from jsonschema import validate
 
 proxies = {'http': 'http://127.0.0.1:8998',
            'https': 'http://127.0.0.1:8998',
@@ -83,3 +86,30 @@ def test_get_hook():
     assert r.status_code==200
 
 
+def test_jsonpath():
+    r = requests.get("https://home.testing-studio.com/categories.json")
+    pprint(r)
+    print(r.status_code)
+    # print(json.dumps(r.json(), indent=2, ensure_ascii=False))
+    print(json.dumps(json.loads(r.text), indent=2, ensure_ascii=False))
+    assert r.status_code == 200
+
+    for item in r.json()['category_list']['categories']:
+        if item['name']=='开源项目':
+            break
+    print(item)
+    assert jsonpath(r.json(),
+                    '$..categories[?(@.name=="开源项目")]')[0]['description'] == "开源项目交流与维护"
+    assert  item["description"]=="开源项目交流与维护"
+
+
+def test_schema():
+    r = requests.get("https://home.testing-studio.com/categories.json")
+    pprint(r)
+    print(r.status_code)
+    # print(json.dumps(r.json(), indent=2, ensure_ascii=False))
+    print(json.dumps(json.loads(r.text), indent=2, ensure_ascii=False))
+    assert r.status_code == 200
+    with open("categories.schema.json", encoding='utf-8') as f:
+        schema = json.load(f)
+        validate(r.json(),schema)

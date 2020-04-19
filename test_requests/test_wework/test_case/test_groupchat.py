@@ -7,7 +7,7 @@ from test_requests.test_wework.api.wework import WeWork
 from test_requests.test_wework.api.groupchat import GroupChat
 
 
-class TestWeWork:
+class TestGroupchat:
     # secret ="svWk8sPWM6hliL0agxvn19KG7jQifNnAT-oMjdGrDVU"
    # secret = "gX8dx95r27l4lYqHahmdEsClEe2yeXNsZSkkoM-lX1c"
     token = None
