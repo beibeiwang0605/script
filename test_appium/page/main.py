@@ -16,12 +16,13 @@ class Main(BasePage):
     def goto_search_page(self):
         """进入搜索页"""
         # self.find_element(MobileBy.ID, "tv_search").click()
-        self.steps_yaml("D:/test/pycharm/script/test_appium/page/steps.yaml")
+        self.steps_yaml("../page/steps.yaml")
         return Search(self._driver)
 
     def goto_stocks(self):
         """进入‘行情’页"""
-        self.find_element(By.XPATH, '//*[@text="行情"]').click()
+        #self.find_element(By.XPATH, '//*[@text="行情" and contains(@resource-id,"tab_name")]').click()
+        self.steps_yaml(("../page/main.yaml"))
         return Stocks(self._driver)
 
     def goto_trade(self):

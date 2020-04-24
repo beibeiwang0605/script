@@ -10,6 +10,28 @@ from appium.webdriver.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 
 
+def exception_handle(fun):
+    def magic(*args, **kwargs):
+        _self: BasePage = args[0]
+        try:
+            result = fun(*args, **kwargs)
+            # 清空计数次数
+            return result
+        except Exception as e:
+            # 加计数，避免抛异常进入死循环，如果次数太多，就退出异常逻辑，直接报错，抛异常
+            if _self._error_count >= _self._error_max:
+                raise e
+            _self._error_count += 1
+            # 对黑名单里的弹框进行处理
+            for element in _self._black_list:
+                elements = _self._driver.find_elements(*element)
+                if len(elements) > 0:
+                    elements[0].click()
+                    break
+            # return 继续寻找原来正常的控件
+            return magic(*args, *kwargs)
+    return magic
+
 class BasePage:
     # 加日志功能，可以打印一些异常信息
     logging.basicConfig(level=logging.INFO)
@@ -21,85 +43,30 @@ class BasePage:
         (By.ID, 'image_cancel'),
         (By.XPATH, '//*[@text="下次再说"]')
     ]
-    _error_max = 3
+    _error_max = 5
     _error_count = 0
     _params={}
-    # 把app里的driver传递过来这里使用
+
     def __init__(self, driver: WebDriver = None):
         self._driver = driver
 
-    # TODO:当有广告、评价等各种弹框出现的时候，要进行异常流程处理
+    @exception_handle
     def find_element(self, by, locator: str = None):
-        logging.info(by)
-        logging.info(locator)
-        try:
-            # 寻找控件
-            # element=self._driver.find_element(*by) if isinstance(by, tuple) else self._driver.find_element(by, locator)
-            if isinstance(by, tuple):
-                return self._driver.find_element(*by)
-            else:
-                return self._driver.find_element(by, locator)
-            # 如果成功，清空错误计数
-            self._error_count = 0
-            # return element
-        except Exception as e:
-            # 如果次数太多，就退出异常逻辑，直接报错，抛异常
-            if self._error_count > self._error_max:
-                raise e
-            # 记录一直异常的次数
-            self._error_count += 1
-            # 对黑名单里的弹框进行处理
-            for element in self._black_list:
-                logging.info(element)
-                elements = self._driver.find_elements(*element)
-                if len(elements) > 0:
-                    elements[0].click()
-                    # 继续寻找原来正常的控件
-                    return self.find_element(by, locator)
-            # 如果黑名单也没有，就报错
-            logging.warn("black list no one found")
-            raise e
-            # self._driver.back()
-            # return  self.find_element(by,locator)
+        return self._driver.find_element(*by) if isinstance(by, tuple) else self._driver.find_element(by, locator)
 
-        # todo :通用异常，通过装饰器让函数自动处理异常
+    @exception_handle
+    def sendkeys(self,value, by, locator=None):
+        return self.find_element(by,locator).send_keys(value)
 
+    @exception_handle
     def find_and_get_text(self, by, locator: str = None):
         logging.info(by)
         logging.info(locator)
-        try:
-            # 寻找控件
-            element = self._driver.find_element(*by) if isinstance(by, tuple) else self._driver.find_element(by,
-                                                                                                             locator)
-            # if isinstance(by, tuple):
-            #     return self._driver.find_element(*by)
-            # else:
-            #     return self._driver.find_element(by, locator)
-            # 如果成功，清空错误计数
-            self._error_count = 0
-            return element.text
-        except Exception as e:
-            # 如果册数太多，就退出异常逻辑，直接报错，抛异常
-            if self._error_count > self._error_max:
-                raise e
-            # 记录一直异常的次数
-            self._error_count += 1
-            # 对黑名单里的弹框进行处理
-            for element in self._black_list:
-                logging.info(element)
-                elements = self._driver.find_elements(*element)
-                if len(elements) > 0:
-                    elements[0].click()
-                    # 继续寻找原来正常的控件
-                    return self.find_and_get_text(by, locator)
-            # 如果黑名单也没有，就报错
-            logging.warn("black list no one found")
-            raise e
-            # self._driver.back()
-            # return  self.find_element(by,locator)
+        element = self.find_element(by, locator)
+        return element.text
 
+    """获取弹框toast"""
     def get_toast(self):
-        """获取弹框toast"""
         return self.find_element(By.XPATH, "//*[@class='android.widget.Toast']").text
 
     def text(self, key):
@@ -112,27 +79,30 @@ class BasePage:
         print(yaml.safe_load(open(path)))
 
     def steps_yaml(self,path):
-        with open(path) as f:
-            steps:list[dict] = yaml.safe_load(f)
-            element: WebElement= None
+        # 加utf-8防止乱码
+        with open(path,encoding="utf-8") as f:
+            #读取步骤定义文件
+            steps: list[dict] = yaml.safe_load(f)
+            #保存一个目标对象
+            # element: WebElement= None
             for step in steps:
                 logging.info(step)
+                print(step)
                 if "by" in step.keys():
-                    element=self.find_element(step["by"],step["locator"])
+                    element = self.find_element(step["by"],step["locator"])
                 if "action" in step.keys():
-                    action=step["action"]
-                    if action == "find_element":
-                        pass
-                    elif action =="click":
+                    if step["action"] == "click":
                         element.click()
-                    elif action == "text":
-                        element.text
-                    elif action == "attribute":
-                        element.get_attribute(step["value"])
-                    elif action in ["send", "input"]:
-                        content=step["value"]
-                        for key in self._params.keys():
-                            content=content.replace("{%s}" %key, self._params[key])
+                    if step["action"] in ["send","input"] :
+                        content: str = step["value"]
+                        for param in self._params.keys():
+                            # value: jd, value2:jd
+                            content = content.replace("{%s}"%param, self._params[param])
                         element.send_keys(content)
+                    if step["action"] == "text":
+                        element.text()
+                    if step["action"] == "attribute":
+                        element.get_attribute(step["value"])
+
 
 

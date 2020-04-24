@@ -13,16 +13,15 @@ from test_appium.page.main import Main
 class App(BasePage):
     # def __init__(self, driver: WebDriver = None):
     #     super()
-    _package = "com.xueqiu.android"
-    _activity = ".view.WelcomeActivityAlias"
     def start(self):
         _package = "com.xueqiu.android"
+        _activity = ".view.WelcomeActivityAlias"
         if self._driver is None:
             caps = {}
             caps["platformName"] = "android"
-            caps["deviceName"] = "Android 6.0"
-            caps["appPackage"] = self._package
-            caps["appActivity"] = self._activity
+            caps["deviceName"] = "Android 9.0"
+            caps["appPackage"] = _package
+            caps["appActivity"] = _activity
             caps["automationName"] = "uiautomator2"
             #caps["noReset"] = True  # Ture表示不重置，False表示重置，数据被清理的过程
             # caps["dontStopAppOnReset"] = True
@@ -38,7 +37,7 @@ class App(BasePage):
         else:
             print(self._driver)
             # todo :kill app start app
-            self._driver.start_activity(self._package, self._activity)
+            self._driver.start_activity(_package, _activity)
 
         return self
 

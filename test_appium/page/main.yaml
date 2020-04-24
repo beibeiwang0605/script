@@ -1,0 +1,4 @@
+# 进入行情页
+- by: xpath
+  locator: //*[@text="行情" and contains(@resource-id,"tab_name")]
+  action: click

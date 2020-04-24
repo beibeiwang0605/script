@@ -9,16 +9,23 @@ from test_appium.page.base_page import BasePage
 
 
 class Stocks(BasePage):
-    def stocks_search(self, key):
+    def stocks_search(self, value: str):
         """行情里搜索key"""
-        # 点击行情页的选择放大镜，隐式等待
-        self.find_element(By.ID, 'action_search').click()
-        time.sleep(2)
 
-        #输入搜索关键字，并选择第一个搜索到的内容
-        self.find_element(By.ID, 'search_input_text').send_keys(key)
-        time.sleep(1)
-        self.find_element(By.ID, 'name').click()
+        # 正常的po模式
+        # 点击行情页的选择放大镜，隐式等待
+        # self.find_element(By.ID, 'action_search').click()
+        # time.sleep(2)
+        # #输入搜索关键字，并选择第一个搜索到的内容
+        # self.find_element(By.ID, 'search_input_text').send_keys(key)
+        # time.sleep(1)
+        # self.find_element(By.ID, 'name').click()
+
+        # 使用yaml进行驱动
+        self._params = {}
+        self._params["value"] = value
+        self.steps_yaml("../page/stocks.yaml")
+        #self.steps_yaml("../page/search.yaml")
         return self
 
     def stocks_select(self):
