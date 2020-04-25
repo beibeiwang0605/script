@@ -8,13 +8,14 @@ from test_requests.test_wework.api.groupchat import GroupChat
 
 
 class TestWeWork:
-    # secret ="svWk8sPWM6hliL0agxvn19KG7jQifNnAT-oMjdGrDVU"
+    secret = "gX8dx95r27l4lYqHahmdEsClEe2yeXNsZSkkoM-lX1c"
     token = None
 
     @classmethod
     def setup_class(cls):
         """获取token，作为全局使用(类方法)"""
-        cls.token = WeWork.get_token()
+        # cls.token = WeWork.get_token()
+        cls.token_steps=WeWork()
 
     def test_get_token(self):
         r = WeWork.get_access_token()
@@ -26,6 +27,11 @@ class TestWeWork:
 
     def test_get_token_exist(self):
         assert self.token is not None
+
+    # 测试步骤驱动，获取token
+    def test_get_token_steps(self):
+        self.token_steps.get_token_steps()
+
 
 
 

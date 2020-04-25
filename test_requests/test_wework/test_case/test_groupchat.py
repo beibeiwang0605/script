@@ -18,12 +18,13 @@ class TestGroupchat:
         cls.groupchat=GroupChat()
         # cls.token = WeWork.get_token(cls.groupchat.secret)
 
-    def test_get_list(self):
-        userid="WangBeiBei"
-        r = requests.get('https://qyapi.weixin.qq.com/cgi-bin/externalcontact/list',
-                         params={"access_token":self.groupchat.get_token(self.groupchat.secret),"userid":userid})
+    # def test_get_list(self):
+    #     userid="WangBeiBei"
+    #     r = requests.get('https://qyapi.weixin.qq.com/cgi-bin/externalcontact/list',
+    #                      params={"access_token":self.groupchat.get_token(self.groupchat.secret),"userid":userid})
     # 客户群管理
-    def test_groupchat_get(self):
+
+    def test_groupchat_list(self):
         """获取客户群列表"""
         r = self.groupchat.list()
         assert r['errcode']==0
@@ -33,9 +34,11 @@ class TestGroupchat:
 
     def test_groupchat_detail(self):
         """获取客户群详情"""
+        # 先从列表获取到chat_id
         r = self.groupchat.list(offset=0, limit=10)
         assert r['errcode'] == 0
         chat_id = r['group_chat_list'][0]['chat_id']
+        #再使用chat_id获取详情信息
         r = self.groupchat.get(_chat_id= chat_id)
         assert r['errcode'] == 0
         assert len(r['group_chat']['member_list']) > 0

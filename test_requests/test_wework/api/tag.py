@@ -6,7 +6,7 @@ import requests
 from test_requests.test_wework.api.base_api import BaseApi
 from test_requests.test_wework.api.wework import WeWork
 
-
+# 装饰器
 def api(fun):
     def magic(*args, **kwargs):
         base_api: BaseApi = args[0]
@@ -20,11 +20,9 @@ def api(fun):
 class Tag(WeWork):
 
     def __init__(self):
+        secret = "gX8dx95r27l4lYqHahmdEsClEe2yeXNsZSkkoM-lX1c"
+        self.params['access_token'] = self.get_token_steps(secret)
         self.data=self.api_load("../api/tag.api.yaml")
-
-    # 测试步骤的驱动
-    def get_api(self):
-        return self.api_send(self.data['get'])
 
     def get(self):
         url="https://qyapi.weixin.qq.com/cgi-bin/externalcontact/get_corp_tag_list"
@@ -34,11 +32,6 @@ class Tag(WeWork):
         self.format(r)
         return r.json()
 
-    #测试步骤的驱动
-    def add_api(self,name, **kwargs):
-        #todo:用装饰器解决参数替换
-        self.params["name"]=name
-        return self.api_send(self.data["add"])
 
     def add(self, name):
         url = "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag"
@@ -58,13 +51,6 @@ class Tag(WeWork):
     def update(self):
         pass
 
-    # 测试步骤的驱动
-    def delete_api(self,tag_id=[],group_id=[]):
-        #todo:用装饰器解决参数替换
-        self.params["tag_id"]=tag_id
-        self.params["group_id"] = group_id
-        return self.api_send(self.data['delete'])
-
     def delete(self,tag_id=None, group_id=None):
         url="https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag"
         r = requests.post(url,
@@ -80,3 +66,19 @@ class Tag(WeWork):
     @api
     def xxx(self, age):
         pass
+
+    # 测试步骤的驱动
+    def get_api(self):
+        return self.api_send(self.data['get'])
+
+    # 测试步骤的驱动
+    def add_api(self):
+        # todo:用装饰器解决参数替换
+        return self.api_send(self.data["add"])
+
+    # 测试步骤的驱动
+    def delete_api(self, tag_id=[], group_id=[]):
+        # todo:用装饰器解决参数替换
+        self.params["tag_id"] = tag_id
+        self.params["group_id"] = group_id
+        return self.api_send(self.data['delete'])

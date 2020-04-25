@@ -4,7 +4,7 @@ get:
   method: post
   url: https://qyapi.weixin.qq.com/cgi-bin/externalcontact/get_corp_tag_list
   params:
-    access_token: ${token}
+    access_token: ${access_token}
   json:
     tag_id: []
 
@@ -13,7 +13,7 @@ add:
   method: post
   url: https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag
   params:
-    access_token: ${token}
+    access_token: ${access_token}
   json:
     group_id: etujavBgAAKhY7E1iwMSiIhNFz6WbRIg
     tag:
@@ -22,9 +22,9 @@ add:
 
 delete:
   method: post
-  url: https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag
+  url: https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag
   params:
-    access_token: ${token}
+    access_token: ${access_token}
   json:
     group_id: ${group_id}
     tag_id: ${tag_id}

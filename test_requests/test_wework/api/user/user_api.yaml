@@ -1,0 +1,9 @@
+
+
+get:
+  - method: get
+  - url: https://qyapi.weixin.qq.com/cgi-bin/user/get
+  - params:
+    - access_token: ${token}
+  - json:
+    - userid: []

@@ -32,6 +32,12 @@ class WeWork(BaseApi):
             cls.token_time[secret]=datetime.now()
         return cls.token[secret]
 
+
+    def get_token_steps(self, secret=secret):
+        wework_data = self.yaml_load('../api/wework_yaml.yaml')
+        self.params['corpsecret']= secret
+        return self.api_send(wework_data['get_token_steps'])['access_token']
+
     @classmethod
     def get_access_token(cls, secret= secret):
         r = requests.get(cls.token_url,
