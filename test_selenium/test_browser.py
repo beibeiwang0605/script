@@ -13,8 +13,10 @@ from test_selenium.test_hogwarts import TestHogwarts
 
 class TestBrowser(TestHogwarts):
     """多浏览器选择"""
+    browser = "reuse"
     def setup_method(self,method):
-        browser = os.getenv("browser", "").lower()
+        browser = os.getenv("browser", "").lower() if self.browser == "" else self.browser
+        print(browser)
         if browser == "PhantomJS":
             self.driver = webdriver.PhantomJS()
         elif browser == "firefox":
@@ -35,7 +37,8 @@ class TestBrowser(TestHogwarts):
             # self.driver = webdriver.Chrome(options.headless)  # 加option,headless可以使页面无显示加载
         # self.driver = webdriver.Firefox()
         #self.driver.set_window_size(1552, 840)
-        self.driver.get("https://testerhome.com/")
+        if browser != 'reuse':
+            self.driver.get("https://testerhome.com/")
         # 隐式等待
         self.driver.implicitly_wait(5)
 
